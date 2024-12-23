@@ -1,8 +1,8 @@
 Write-Host 'Welcome to PowerShell my friend.'
 
 # VIM MODUS
-Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -ViModeIndicator Cursor
+# Set-PSReadLineOption -EditMode Vi
+# Set-PSReadLineOption -ViModeIndicator Cursor
 
 # DEFINITIES
 $Env:rd_coding = "$Env:OneDrive\home\07-coding"
@@ -103,4 +103,31 @@ function subdetails {
                 expr={@(gci $_ -Recurse -File | Group-Object -Property Extension -NoElement).Name -join ", "}
             } |
         Sort-Object -Property Size
+}
+
+
+# Function to switch between light and dark mode
+function Toggle-DarkMode {
+    param(
+        [switch]$EnableLightMode
+    )
+
+    $lightModeValue = 1
+    $darkModeValue = 0
+
+    # Define registry path
+    $registryPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+
+    # Set the values for light or dark mode based on the input
+    $modeValue = if ($EnableLightMode) { $lightModeValue } else { $darkModeValue }
+
+    # Update registry for both apps and system theme
+    Set-ItemProperty -Path $registryPath -Name "AppsUseLightTheme" -Value $modeValue
+    Set-ItemProperty -Path $registryPath -Name "SystemUseLightTheme" -Value $modeValue
+
+    if ($EnableLightMode) {
+        Write-Host "Light mode enabled."
+    } else {
+        Write-Host "Dark mode enabled."
+    }
 }
